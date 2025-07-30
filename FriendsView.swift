@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct FriendsView: View {
+    @EnvironmentObject var appData: AppData
     @State private var searchText = ""
     
     let friends = [
@@ -92,6 +93,7 @@ struct FriendsView: View {
                     
                     ForEach(onlineFriends) { friend in
                         FriendRow(friend: friend)
+                            .environmentObject(appData)
                     }
                 }
             }
@@ -116,6 +118,7 @@ struct FriendsView: View {
                     
                     ForEach(offlineFriends) { friend in
                         FriendRow(friend: friend)
+                            .environmentObject(appData)
                     }
                 }
             }
@@ -141,6 +144,7 @@ struct FriendsView: View {
 }
 
 struct FriendRow: View {
+    @EnvironmentObject var appData: AppData
     let friend: Friend
     
     var body: some View {
@@ -209,15 +213,15 @@ struct FriendRow: View {
                     .foregroundColor(.secondary)
                 
                 Button {
-                    // Invite to chill action
+                    toggleFriendSelection()
                 } label: {
-                    Text("Chillen")
+                    Text(isSelected ? "Entfernen" : "Chillen")
                         .font(.caption)
                         .fontWeight(.medium)
                         .foregroundColor(.white)
                         .padding(.horizontal, 12)
                         .padding(.vertical, 6)
-                        .background(friend.isOnline ? Color.purple : Color.gray)
+                        .background(buttonColor)
                         .cornerRadius(8)
                 }
                 .disabled(!friend.isOnline)
@@ -229,6 +233,25 @@ struct FriendRow: View {
         .shadow(color: .black.opacity(0.05), radius: 4, x: 0, y: 1)
         .padding(.horizontal)
         .padding(.bottom, 4)
+    }
+    
+    private var isSelected: Bool {
+        appData.selectedFriends.contains { $0.id == friend.id }
+    }
+    
+    private var buttonColor: Color {
+        if !friend.isOnline {
+            return .gray
+        }
+        return isSelected ? .red : .purple
+    }
+    
+    private func toggleFriendSelection() {
+        if isSelected {
+            appData.removeFriend(friend)
+        } else {
+            appData.addFriend(friend)
+        }
     }
 }
 

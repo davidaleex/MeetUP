@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct SettingsView: View {
+    @EnvironmentObject var appData: AppData
     @State private var notificationsEnabled = true
     @State private var locationEnabled = true
     @State private var soundsEnabled = true
@@ -88,6 +89,13 @@ struct SettingsView: View {
                 title: "Dark Mode",
                 color: .indigo,
                 toggle: $darkModeEnabled
+            )
+            
+            SettingsRow(
+                icon: "bell.badge.fill",
+                title: "Punkte-Sound",
+                color: .yellow,
+                toggle: $appData.pointsSoundEnabled
             )
             
         } header: {

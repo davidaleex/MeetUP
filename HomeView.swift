@@ -1,6 +1,8 @@
 import SwiftUI
 
 struct HomeView: View {
+    @EnvironmentObject var appData: AppData
+    
     var body: some View {
         NavigationStack {
             ScrollView {
@@ -42,7 +44,7 @@ struct HomeView: View {
             }
             
             HStack {
-                Text("2,847")
+                Text("\(appData.totalPoints)")
                     .font(.system(size: 36, weight: .bold, design: .rounded))
                     .foregroundColor(.primary)
                 Text("Punkte")
@@ -52,7 +54,7 @@ struct HomeView: View {
             }
             
             HStack {
-                Text("+127 heute")
+                Text("+\(min(appData.totalPoints, 150)) heute")
                     .font(.subheadline)
                     .foregroundColor(.green)
                     .padding(.horizontal, 12)

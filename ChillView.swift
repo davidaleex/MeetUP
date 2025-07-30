@@ -1,15 +1,15 @@
 import SwiftUI
 
 struct ChillView: View {
-    @State private var isChilling = false
-    @State private var currentPoints = 0
+    @EnvironmentObject var appData: AppData
+    @State private var currentSessionPoints = 0
     @State private var sessionTime = 0
     @State private var timer: Timer?
     
     var body: some View {
         NavigationStack {
             VStack(spacing: 32) {
-                if isChilling {
+                if appData.isChilling {
                     activeChillSession
                 } else {
                     inactiveChillState
@@ -21,7 +21,7 @@ struct ChillView: View {
             .navigationTitle("Chill")
             .background(
                 LinearGradient(
-                    gradient: Gradient(colors: isChilling ? [.purple.opacity(0.1), .blue.opacity(0.1)] : [.gray.opacity(0.05), .clear]),
+                    gradient: Gradient(colors: appData.isChilling ? [.purple.opacity(0.1), .blue.opacity(0.1)] : [.gray.opacity(0.05), .clear]),
                     startPoint: .topLeading,
                     endPoint: .bottomTrailing
                 )
@@ -36,7 +36,7 @@ struct ChillView: View {
                     .font(.title3)
                     .foregroundColor(.secondary)
                 
-                Text("Anna & Max")
+                Text(appData.selectedFriendsNames)
                     .font(.largeTitle)
                     .fontWeight(.bold)
                     .foregroundColor(.primary)
@@ -73,7 +73,7 @@ struct ChillView: View {
                         .font(.headline)
                         .foregroundColor(.secondary)
                     
-                    Text("\(currentPoints)")
+                    Text("\(currentSessionPoints)")
                         .font(.system(size: 32, weight: .bold, design: .rounded))
                         .foregroundColor(.purple)
                 }
@@ -123,7 +123,7 @@ struct ChillView: View {
                 Button(action: startChillSession) {
                     HStack {
                         Image(systemName: "play.fill")
-                        Text("Session mit Anna & Max starten")
+                        Text(appData.selectedFriends.isEmpty ? "Wähle zuerst Freunde aus" : "Session mit \(appData.selectedFriendsNames) starten")
                     }
                     .font(.headline)
                     .foregroundColor(.white)
@@ -134,6 +134,7 @@ struct ChillView: View {
                     )
                     .cornerRadius(12)
                 }
+                .disabled(appData.selectedFriends.isEmpty)
                 
                 Button(action: {}) {
                     HStack {
@@ -152,22 +153,26 @@ struct ChillView: View {
     }
     
     private func startChillSession() {
-        isChilling = true
-        currentPoints = 0
+        guard !appData.selectedFriends.isEmpty else { return }
+        
+        appData.isChilling = true
+        currentSessionPoints = 0
         sessionTime = 0
         
         timer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { _ in
             sessionTime += 1
             if sessionTime % 60 == 0 {
-                currentPoints += 1
+                currentSessionPoints += 1
+                appData.addPoints(1)
             }
         }
     }
     
     private func stopChillSession() {
-        isChilling = false
+        appData.isChilling = false
         timer?.invalidate()
         timer = nil
+        appData.clearSelectedFriends()
     }
     
     private func timeString(from seconds: Int) -> String {

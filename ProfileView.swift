@@ -1,6 +1,8 @@
 import SwiftUI
 
 struct ProfileView: View {
+    @EnvironmentObject var appData: AppData
+    
     var body: some View {
         NavigationStack {
             ScrollView {
@@ -58,7 +60,7 @@ struct ProfileView: View {
             }
             
             HStack(spacing: 32) {
-                ProfileStat(number: "2,847", label: "Punkte")
+                ProfileStat(number: "\(appData.totalPoints)", label: "Punkte")
                 ProfileStat(number: "142", label: "Sessions")
                 ProfileStat(number: "23", label: "Freunde")
             }
@@ -86,10 +88,10 @@ struct ProfileView: View {
             }
             
             LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 2), spacing: 12) {
-                ProfileStatCard(title: "Heute", value: "127", subtitle: "Punkte", color: .green)
-                ProfileStatCard(title: "Diese Woche", value: "892", subtitle: "Punkte", color: .blue)
+                ProfileStatCard(title: "Heute", value: "\(min(appData.totalPoints, 150))", subtitle: "Punkte", color: .green)
+                ProfileStatCard(title: "Diese Woche", value: "\(appData.totalPoints)", subtitle: "Punkte", color: .blue)
                 ProfileStatCard(title: "Durchschnitt", value: "34 Min", subtitle: "pro Session", color: .orange)
-                ProfileStatCard(title: "Längste", value: "2h 15m", subtitle: "Session", color: .purple)
+                ProfileStatCard(title: "Level", value: "\(max(1, appData.totalPoints / 100))", subtitle: "Erreicht", color: .purple)
             }
         }
     }
