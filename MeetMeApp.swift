@@ -13,7 +13,7 @@ struct MeetMeApp: App {
     
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            MainAppView()
                 .environmentObject(appData)
         }
     }

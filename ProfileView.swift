@@ -49,11 +49,11 @@ struct ProfileView: View {
                 }
                 
                 VStack(spacing: 4) {
-                    Text("@davidweil")
+                    Text("@\(appData.userProfile.username)")
                         .font(.title2)
                         .fontWeight(.semibold)
                     
-                    Text("Chill-Master seit 2024")
+                    Text(appData.userProfile.levelTitle)
                         .font(.subheadline)
                         .foregroundColor(.secondary)
                 }
@@ -61,11 +61,20 @@ struct ProfileView: View {
             
             HStack(spacing: 32) {
                 ProfileStat(number: "\(appData.totalPoints)", label: "Punkte")
-                ProfileStat(number: "142", label: "Sessions")
-                ProfileStat(number: "23", label: "Freunde")
+                ProfileStat(number: "\(appData.totalSessions)", label: "Sessions")
+                ProfileStat(number: "\(appData.friends.count)", label: "Freunde")
             }
             
-            Text("💫 Level 12 • 🔥 3 Tage Streak")
+            HStack(spacing: 16) {
+                Text("💫 Level \(appData.userProfile.level)")
+                Text("•")
+                    .foregroundColor(.secondary)
+                if let topFriend = appData.topFriend {
+                    Text("👑 Top Friend: \(topFriend.name.components(separatedBy: " ").first ?? topFriend.name)")
+                } else {
+                    Text("🌟 Bereit für neue Freundschaften")
+                }
+            }
                 .font(.subheadline)
                 .padding(.horizontal, 16)
                 .padding(.vertical, 8)
@@ -88,10 +97,10 @@ struct ProfileView: View {
             }
             
             LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 2), spacing: 12) {
-                ProfileStatCard(title: "Heute", value: "\(min(appData.totalPoints, 150))", subtitle: "Punkte", color: .green)
-                ProfileStatCard(title: "Diese Woche", value: "\(appData.totalPoints)", subtitle: "Punkte", color: .blue)
-                ProfileStatCard(title: "Durchschnitt", value: "34 Min", subtitle: "pro Session", color: .orange)
-                ProfileStatCard(title: "Level", value: "\(max(1, appData.totalPoints / 100))", subtitle: "Erreicht", color: .purple)
+                ProfileStatCard(title: "Diese Woche", value: "\(appData.weeklyStats.pointsEarned)", subtitle: "Punkte", color: .green)
+                ProfileStatCard(title: "Sessions", value: "\(appData.weeklyStats.sessionsCount)", subtitle: "diese Woche", color: .blue)
+                ProfileStatCard(title: "Chill-Zeit", value: "\(appData.totalChillMinutes)", subtitle: "Minuten", color: .orange)
+                ProfileStatCard(title: "Level", value: "\(appData.userProfile.level)", subtitle: "erreicht", color: .purple)
             }
         }
     }
@@ -266,4 +275,5 @@ struct ActivityRow: View {
 
 #Preview {
     ProfileView()
+        .environmentObject(AppData())
 }

@@ -4,22 +4,12 @@ struct FriendsView: View {
     @EnvironmentObject var appData: AppData
     @State private var searchText = ""
     
-    let friends = [
-        Friend(name: "Anna Schmidt", username: "@anna_s", points: 3245, isOnline: true, lastSeen: "Online", mutualFriends: 5),
-        Friend(name: "Max Müller", username: "@max_m", points: 2156, isOnline: true, lastSeen: "Online", mutualFriends: 8),
-        Friend(name: "Lisa Weber", username: "@lisa_w", points: 4521, isOnline: false, lastSeen: "vor 2h", mutualFriends: 3),
-        Friend(name: "Tom Fischer", username: "@tom_f", points: 1890, isOnline: false, lastSeen: "vor 1d", mutualFriends: 12),
-        Friend(name: "Sarah Klein", username: "@sarah_k", points: 2987, isOnline: true, lastSeen: "Online", mutualFriends: 6),
-        Friend(name: "Alex Bauer", username: "@alex_b", points: 1654, isOnline: false, lastSeen: "vor 3h", mutualFriends: 4),
-        Friend(name: "Julia Richter", username: "@julia_r", points: 3876, isOnline: false, lastSeen: "vor 5h", mutualFriends: 9),
-        Friend(name: "Daniel Wolf", username: "@daniel_w", points: 2234, isOnline: true, lastSeen: "Online", mutualFriends: 7)
-    ]
-    
     var filteredFriends: [Friend] {
+        let friendsList = appData.friends
         if searchText.isEmpty {
-            return friends.sorted { $0.isOnline && !$1.isOnline }
+            return friendsList.sorted { $0.isOnline && !$1.isOnline }
         } else {
-            return friends.filter { friend in
+            return friendsList.filter { friend in
                 friend.name.localizedCaseInsensitiveContains(searchText) ||
                 friend.username.localizedCaseInsensitiveContains(searchText)
             }.sorted { $0.isOnline && !$1.isOnline }
@@ -187,11 +177,11 @@ struct FriendRow: View {
                     .foregroundColor(.secondary)
                 
                 HStack(spacing: 4) {
-                    Image(systemName: "star.fill")
+                    Image(systemName: "timer")
                         .font(.caption)
-                        .foregroundColor(.yellow)
+                        .foregroundColor(.purple)
                     
-                    Text("\(friend.points) Punkte")
+                    Text("\(friend.totalChillMinutes) Min")
                         .font(.caption)
                         .foregroundColor(.secondary)
                     
@@ -199,9 +189,19 @@ struct FriendRow: View {
                         .font(.caption)
                         .foregroundColor(.secondary)
                     
-                    Text("\(friend.mutualFriends) gemeinsame")
+                    Text("Level \(friend.bondLevel)")
                         .font(.caption)
                         .foregroundColor(.secondary)
+                        .fontWeight(.medium)
+                    
+                    Text("•")
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                    
+                    Text(friend.bondTitle)
+                        .font(.caption)
+                        .foregroundColor(.purple)
+                        .fontWeight(.medium)
                 }
             }
             
@@ -255,21 +255,8 @@ struct FriendRow: View {
     }
 }
 
-struct Friend: Identifiable {
-    let id = UUID()
-    let name: String
-    let username: String
-    let points: Int
-    let isOnline: Bool
-    let lastSeen: String
-    let mutualFriends: Int
-    
-    var initials: String {
-        let components = name.components(separatedBy: " ")
-        return components.map { String($0.prefix(1)) }.joined()
-    }
-}
 
 #Preview {
     FriendsView()
+        .environmentObject(AppData())
 }

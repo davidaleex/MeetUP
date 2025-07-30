@@ -155,7 +155,7 @@ struct ChillView: View {
     private func startChillSession() {
         guard !appData.selectedFriends.isEmpty else { return }
         
-        appData.isChilling = true
+        appData.startChillSession()
         currentSessionPoints = 0
         sessionTime = 0
         
@@ -169,10 +169,14 @@ struct ChillView: View {
     }
     
     private func stopChillSession() {
-        appData.isChilling = false
         timer?.invalidate()
         timer = nil
-        appData.clearSelectedFriends()
+        
+        let durationMinutes = sessionTime / 60
+        appData.endChillSession(durationMinutes: durationMinutes, pointsEarned: currentSessionPoints)
+        
+        sessionTime = 0
+        currentSessionPoints = 0
     }
     
     private func timeString(from seconds: Int) -> String {
@@ -184,4 +188,5 @@ struct ChillView: View {
 
 #Preview {
     ChillView()
+        .environmentObject(AppData())
 }
