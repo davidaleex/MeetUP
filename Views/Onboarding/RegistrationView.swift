@@ -14,12 +14,12 @@ struct RegistrationView: View {
     var body: some View {
         NavigationStack {
             ScrollView(.vertical, showsIndicators: false) {
-                VStack(spacing: DesignSystem.Spacing.xxxl) {
+                VStack(spacing: Spacing.xxxl) {
                     // Header mit modernem Design
-                    VStack(spacing: DesignSystem.Spacing.xl) {
+                    VStack(spacing: Spacing.xl) {
                         ZStack {
                             Circle()
-                                .fill(DesignSystem.Colors.primaryGradient.opacity(0.1))
+                                .fill(Colors.primaryGradient.opacity(0.1))
                                 .frame(width: 120, height: 120)
                                 .scaleEffect(bounceIcon ? 1.1 : 1.0)
                                 .animation(
@@ -29,33 +29,33 @@ struct RegistrationView: View {
                             
                             Image(systemName: "person.crop.circle.fill.badge.plus")
                                 .font(.system(size: 60))
-                                .foregroundColor(DesignSystem.Colors.primary)
+                                .foregroundColor(Colors.primary)
                         }
                         .opacity(showContent ? 1.0 : 0.0)
                         .scaleEffect(showContent ? 1.0 : 0.8)
-                        .animation(DesignSystem.Animation.bounce.delay(0.2), value: showContent)
+                        .animation(AnimationConfig.bounce.delay(0.2), value: showContent)
                         
-                        VStack(spacing: DesignSystem.Spacing.md) {
+                        VStack(spacing: Spacing.md) {
                             Text("Willkommen bei MeetMe!")
-                                .font(DesignSystem.Typography.largeTitle)
-                                .foregroundColor(DesignSystem.Colors.textPrimary)
+                                .font(Typography.largeTitle)
+                                .foregroundColor(Colors.textPrimary)
                                 .multilineTextAlignment(.center)
                                 .opacity(showContent ? 1.0 : 0.0)
-                                .animation(DesignSystem.Animation.smooth.delay(0.4), value: showContent)
+                                .animation(AnimationConfig.smooth.delay(0.4), value: showContent)
                             
                             Text("Lass uns dich kennenlernen. Wie sollen wir dich nennen?")
-                                .font(DesignSystem.Typography.callout)
-                                .foregroundColor(DesignSystem.Colors.textSecondary)
+                                .font(Typography.callout)
+                                .foregroundColor(Colors.textSecondary)
                                 .multilineTextAlignment(.center)
-                                .padding(.horizontal, DesignSystem.Spacing.lg)
+                                .padding(.horizontal, Spacing.lg)
                                 .opacity(showContent ? 1.0 : 0.0)
-                                .animation(DesignSystem.Animation.smooth.delay(0.6), value: showContent)
+                                .animation(AnimationConfig.smooth.delay(0.6), value: showContent)
                         }
                     }
-                    .padding(.top, DesignSystem.Spacing.giant)
+                    .padding(.top, Spacing.giant)
                     
                     // Eingabefelder in Card
-                    VStack(spacing: DesignSystem.Spacing.lg) {
+                    VStack(spacing: Spacing.lg) {
                         ModernTextField(
                             title: "Vorname",
                             placeholder: "z.B. Max",
@@ -70,36 +70,36 @@ struct RegistrationView: View {
                             icon: "person.badge.plus.fill"
                         )
                     }
-                    .padding(DesignSystem.Spacing.cardPadding)
+                    .padding(Spacing.cardPadding)
                     .cardStyle()
                     .opacity(showContent ? 1.0 : 0.0)
-                    .animation(DesignSystem.Animation.smooth.delay(0.8), value: showContent)
+                    .animation(AnimationConfig.smooth.delay(0.8), value: showContent)
                     
                     // Registrieren Button
                     Button(action: handleRegistration) {
-                        HStack(spacing: DesignSystem.Spacing.sm) {
+                        HStack(spacing: Spacing.sm) {
                             Image(systemName: "checkmark.circle.fill")
                                 .font(.title2)
                             
                             Text("Registrieren")
-                                .font(DesignSystem.Typography.headline)
+                                .font(Typography.headline)
                         }
                         .frame(maxWidth: .infinity)
-                        .padding(DesignSystem.Spacing.md)
+                        .padding(Spacing.md)
                     }
                     .primaryButtonStyle()
                     .disabled(!isFormValid)
                     .scaleEffect(isFormValid ? 1.0 : 0.95)
                     .opacity(isFormValid ? 1.0 : 0.6)
-                    .animation(DesignSystem.Animation.quick, value: isFormValid)
+                    .animation(AnimationConfig.quick, value: isFormValid)
                     .opacity(showContent ? 1.0 : 0.0)
-                    .animation(DesignSystem.Animation.smooth.delay(1.0), value: showContent)
+                    .animation(AnimationConfig.smooth.delay(1.0), value: showContent)
                     
-                    Spacer(minLength: DesignSystem.Spacing.xxxl)
+                    Spacer(minLength: Spacing.xxxl)
                 }
-                .padding(.horizontal, DesignSystem.Spacing.lg)
+                .padding(.horizontal, Spacing.lg)
             }
-            .background(DesignSystem.Colors.background)
+            .background(Colors.background)
             .navigationBarHidden(true)
         }
         .alert("Registrierung", isPresented: $showingAlert) {
@@ -145,29 +145,29 @@ struct ModernTextField: View {
     @FocusState private var isFocused: Bool
     
     var body: some View {
-        VStack(alignment: .leading, spacing: DesignSystem.Spacing.sm) {
-            HStack(spacing: DesignSystem.Spacing.xs) {
+        VStack(alignment: .leading, spacing: Spacing.sm) {
+            HStack(spacing: Spacing.xs) {
                 Image(systemName: icon)
                     .font(.caption)
-                    .foregroundColor(DesignSystem.Colors.primary)
+                    .foregroundColor(Colors.primary)
                 
                 Text(title)
-                    .font(DesignSystem.Typography.callout)
-                    .foregroundColor(DesignSystem.Colors.textPrimary)
+                    .font(Typography.callout)
+                    .foregroundColor(Colors.textPrimary)
                     .fontWeight(.medium)
             }
             
             TextField(placeholder, text: $text)
-                .font(DesignSystem.Typography.body)
-                .foregroundColor(DesignSystem.Colors.textPrimary)
-                .padding(DesignSystem.Spacing.md)
+                .font(Typography.body)
+                .foregroundColor(Colors.textPrimary)
+                .padding(Spacing.md)
                 .background(
-                    RoundedRectangle(cornerRadius: DesignSystem.Radius.md)
-                        .fill(DesignSystem.Colors.cardBackground)
+                    RoundedRectangle(cornerRadius: Radius.md)
+                        .fill(Colors.cardBackground)
                         .overlay(
-                            RoundedRectangle(cornerRadius: DesignSystem.Radius.md)
+                            RoundedRectangle(cornerRadius: Radius.md)
                                 .stroke(
-                                    isFocused ? DesignSystem.Colors.primary : DesignSystem.Colors.separator,
+                                    isFocused ? Colors.primary : Colors.separator,
                                     lineWidth: isFocused ? 2 : 1
                                 )
                         )
@@ -175,7 +175,7 @@ struct ModernTextField: View {
                 .focused($isFocused)
                 .autocorrectionDisabled(true)
                 .textInputAutocapitalization(.words)
-                .animation(DesignSystem.Animation.quick, value: isFocused)
+                .animation(AnimationConfig.quick, value: isFocused)
         }
     }
 }

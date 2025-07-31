@@ -29,7 +29,7 @@ class AnimationManager: ObservableObject {
         pointsEarnedAmount = points
         pointsEarnedPosition = position
         
-        withAnimation(DesignSystem.Animation.bounce) {
+        withAnimation(AnimationConfig.bounce) {
             showPointsEarned = true
         }
         
@@ -39,7 +39,7 @@ class AnimationManager: ObservableObject {
         
         // Auto-hide nach 2 Sekunden
         DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
-            withAnimation(DesignSystem.Animation.smooth) {
+            withAnimation(AnimationConfig.smooth) {
                 self.showPointsEarned = false
             }
         }
@@ -57,21 +57,21 @@ class AnimationManager: ObservableObject {
         let impactFeedback = UIImpactFeedbackGenerator(style: .heavy)
         impactFeedback.impactOccurred()
         
-        withAnimation(DesignSystem.Animation.bounce.delay(0.2)) {
+        withAnimation(AnimationConfig.bounce.delay(0.2)) {
             showLevelUp = true
             showFireworks = true
         }
         
         // Confetti nach kurzer Verzögerung
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-            withAnimation(DesignSystem.Animation.smooth) {
+            withAnimation(AnimationConfig.smooth) {
                 self.showConfetti = true
             }
         }
         
         // Auto-hide nach 4 Sekunden
         DispatchQueue.main.asyncAfter(deadline: .now() + 4.0) {
-            withAnimation(DesignSystem.Animation.smooth) {
+            withAnimation(AnimationConfig.smooth) {
                 self.showLevelUp = false
                 self.showFireworks = false
                 self.showConfetti = false
@@ -91,13 +91,13 @@ class AnimationManager: ObservableObject {
         let notificationFeedback = UINotificationFeedbackGenerator()
         notificationFeedback.notificationOccurred(.success)
         
-        withAnimation(DesignSystem.Animation.bounce) {
+        withAnimation(AnimationConfig.bounce) {
             showAchievement = true
         }
         
         // Auto-hide nach 3 Sekunden
         DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) {
-            withAnimation(DesignSystem.Animation.smooth) {
+            withAnimation(AnimationConfig.smooth) {
                 self.showAchievement = false
             }
         }
@@ -108,12 +108,12 @@ class AnimationManager: ObservableObject {
     // MARK: - Confetti Animation
     /// Triggert Confetti-Animation
     func triggerConfetti() {
-        withAnimation(DesignSystem.Animation.smooth) {
+        withAnimation(AnimationConfig.smooth) {
             showConfetti = true
         }
         
         DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) {
-            withAnimation(DesignSystem.Animation.smooth) {
+            withAnimation(AnimationConfig.smooth) {
                 self.showConfetti = false
             }
         }
@@ -191,27 +191,27 @@ struct PointsEarnedView: View {
     @State private var scale: CGFloat = 1.0
     
     var body: some View {
-        VStack(spacing: DesignSystem.Spacing.xs) {
-            HStack(spacing: DesignSystem.Spacing.xs) {
+        VStack(spacing: Spacing.xs) {
+            HStack(spacing: Spacing.xs) {
                 Image(systemName: "plus.circle.fill")
-                    .foregroundColor(DesignSystem.Colors.success)
+                    .foregroundColor(Colors.success)
                     .font(.title2)
                 
                 Text("+\(points)")
-                    .font(DesignSystem.Typography.statNumber)
-                    .foregroundColor(DesignSystem.Colors.success)
+                    .font(Typography.statNumber)
+                    .foregroundColor(Colors.success)
             }
             
-            Text(Microtexts.random(from: Microtexts.Points.earned))
-                .font(DesignSystem.Typography.caption)
-                .foregroundColor(DesignSystem.Colors.textSecondary)
+            Text(Strings.random(from: Strings.Points.earned))
+                .font(Typography.caption)
+                .foregroundColor(Colors.textSecondary)
         }
-        .padding(DesignSystem.Spacing.md)
+        .padding(Spacing.md)
         .background(
-            RoundedRectangle(cornerRadius: DesignSystem.Radius.lg)
-                .fill(DesignSystem.Colors.cardBackground)
+            RoundedRectangle(cornerRadius: Radius.lg)
+                .fill(Colors.cardBackground)
                 .shadow(
-                    color: DesignSystem.Colors.success.opacity(0.3),
+                    color: Colors.success.opacity(0.3),
                     radius: 10,
                     x: 0,
                     y: 5
@@ -223,12 +223,12 @@ struct PointsEarnedView: View {
         .position(position)
         .onAppear {
             // Animiere nach oben und fade out
-            withAnimation(DesignSystem.Animation.smooth.delay(0.1)) {
+            withAnimation(AnimationConfig.smooth.delay(0.1)) {
                 offset = -50
                 scale = 1.2
             }
             
-            withAnimation(DesignSystem.Animation.smooth.delay(1.5)) {
+            withAnimation(AnimationConfig.smooth.delay(1.5)) {
                 opacity = 0.0
                 offset = -100
             }
@@ -249,11 +249,11 @@ struct LevelUpView: View {
             Color.black.opacity(0.7)
                 .ignoresSafeArea()
             
-            VStack(spacing: DesignSystem.Spacing.xl) {
+            VStack(spacing: Spacing.xl) {
                 // Level Up Icon
                 ZStack {
                     Circle()
-                        .fill(DesignSystem.Colors.primaryGradient)
+                        .fill(Colors.primaryGradient)
                         .frame(width: 120, height: 120)
                         .scaleEffect(bounce ? 1.2 : 1.0)
                         .animation(
@@ -267,26 +267,26 @@ struct LevelUpView: View {
                 }
                 
                 // Level Up Text
-                VStack(spacing: DesignSystem.Spacing.sm) {
+                VStack(spacing: Spacing.sm) {
                     Text("LEVEL UP!")
-                        .font(DesignSystem.Typography.largeTitle)
+                        .font(Typography.largeTitle)
                         .foregroundColor(.white)
                         .fontWeight(.black)
                         .opacity(showContent ? 1.0 : 0.0)
                         .scaleEffect(showContent ? 1.0 : 0.5)
                     
                     Text("Du hast Level \(newLevel) erreicht!")
-                        .font(DesignSystem.Typography.title2)
+                        .font(Typography.title2)
                         .foregroundColor(.white.opacity(0.9))
                         .opacity(showContent ? 1.0 : 0.0)
                     
-                    Text(Microtexts.random(from: Microtexts.Points.levelUp))
-                        .font(DesignSystem.Typography.callout)
+                    Text(Strings.random(from: Strings.Points.levelUp))
+                        .font(Typography.callout)
                         .foregroundColor(.white.opacity(0.8))
                         .multilineTextAlignment(.center)
                         .opacity(showContent ? 1.0 : 0.0)
                 }
-                .animation(DesignSystem.Animation.bounce.delay(0.5), value: showContent)
+                .animation(AnimationConfig.bounce.delay(0.5), value: showContent)
             }
         }
         .onAppear {
@@ -305,47 +305,47 @@ struct AchievementPopup: View {
     
     var body: some View {
         VStack {
-            HStack(spacing: DesignSystem.Spacing.md) {
+            HStack(spacing: Spacing.md) {
                 ZStack {
                     Circle()
-                        .fill(DesignSystem.Colors.warning.opacity(0.2))
+                        .fill(Colors.warning.opacity(0.2))
                         .frame(width: 50, height: 50)
                     
                     Image(systemName: "trophy.fill")
                         .font(.title2)
-                        .foregroundColor(DesignSystem.Colors.warning)
+                        .foregroundColor(Colors.warning)
                 }
                 
                 VStack(alignment: .leading, spacing: 4) {
                     Text(title)
-                        .font(DesignSystem.Typography.headline)
-                        .foregroundColor(DesignSystem.Colors.textPrimary)
+                        .font(Typography.headline)
+                        .foregroundColor(Colors.textPrimary)
                     
                     Text(message)
-                        .font(DesignSystem.Typography.subheadline)
-                        .foregroundColor(DesignSystem.Colors.textSecondary)
+                        .font(Typography.subheadline)
+                        .foregroundColor(Colors.textSecondary)
                         .lineLimit(2)
                 }
                 
                 Spacer()
             }
-            .padding(DesignSystem.Spacing.md)
+            .padding(Spacing.md)
             .background(
-                RoundedRectangle(cornerRadius: DesignSystem.Radius.lg)
-                    .fill(DesignSystem.Colors.cardBackground)
+                RoundedRectangle(cornerRadius: Radius.lg)
+                    .fill(Colors.cardBackground)
                     .shadow(
-                        color: DesignSystem.Colors.warning.opacity(0.3),
+                        color: Colors.warning.opacity(0.3),
                         radius: 15,
                         x: 0,
                         y: 8
                     )
             )
             .offset(y: slideIn ? 0 : -200)
-            .animation(DesignSystem.Animation.bounce, value: slideIn)
+            .animation(AnimationConfig.bounce, value: slideIn)
             
             Spacer()
         }
-        .padding(.horizontal, DesignSystem.Spacing.md)
+        .padding(.horizontal, Spacing.md)
         .padding(.top, 100)
         .onAppear {
             slideIn = true
@@ -381,13 +381,13 @@ struct ConfettiView: View {
         confettiPieces = (0..<50).map { _ in
             ConfettiPiece(
                 color: [
-                    DesignSystem.Colors.primary,
-                    DesignSystem.Colors.secondary,
-                    DesignSystem.Colors.warning,
-                    DesignSystem.Colors.success,
-                    DesignSystem.Colors.error,
-                    DesignSystem.Colors.info
-                ].randomElement() ?? DesignSystem.Colors.primary,
+                    Colors.primary,
+                    Colors.secondary,
+                    Colors.warning,
+                    Colors.success,
+                    Colors.error,
+                    Colors.info
+                ].randomElement() ?? Colors.primary,
                 size: CGSize(
                     width: Double.random(in: 4...12),
                     height: Double.random(in: 4...12)
@@ -446,10 +446,10 @@ struct FireworksView: View {
             
             return FireworkParticle(
                 color: [
-                    DesignSystem.Colors.warning,
-                    DesignSystem.Colors.secondary,
-                    DesignSystem.Colors.error
-                ].randomElement() ?? DesignSystem.Colors.warning,
+                    Colors.warning,
+                    Colors.secondary,
+                    Colors.error
+                ].randomElement() ?? Colors.warning,
                 size: Double.random(in: 4...8),
                 position: centerPoint,
                 opacity: 1.0,

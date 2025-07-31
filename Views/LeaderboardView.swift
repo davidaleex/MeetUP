@@ -20,19 +20,19 @@ struct LeaderboardView: View {
     var body: some View {
         NavigationStack {
             ScrollView(.vertical, showsIndicators: false) {
-                VStack(spacing: DesignSystem.Spacing.sectionSpacing) {
+                VStack(spacing: Spacing.sectionSpacing) {
                     headerSection
                     timeframeSelector
                     podiumSection
                     leaderboardList
                     personalStats
-                    Spacer(minLength: DesignSystem.Spacing.xl)
+                    Spacer(minLength: Spacing.xl)
                 }
-                .padding(.horizontal, DesignSystem.Spacing.md)
+                .padding(.horizontal, Spacing.md)
             }
             .navigationTitle("Rangliste")
             .navigationBarTitleDisplayMode(.large)
-            .background(DesignSystem.Colors.background)
+            .background(Colors.background)
             .refreshable {
                 await refreshLeaderboard()
             }
@@ -44,69 +44,69 @@ struct LeaderboardView: View {
     
     // MARK: - Header Section
     private var headerSection: some View {
-        VStack(spacing: DesignSystem.Spacing.sm) {
+        VStack(spacing: Spacing.sm) {
             HStack {
                 Text("Hi \(displayName)! 🏆")
-                    .font(DesignSystem.Typography.title1)
-                    .foregroundColor(DesignSystem.Colors.textPrimary)
+                    .font(Typography.title1)
+                    .foregroundColor(Colors.textPrimary)
                 
                 Spacer()
             }
             
             HStack {
                 Text("Sieh dir die Top-Chiller deiner Freunde an!")
-                    .font(DesignSystem.Typography.callout)
-                    .foregroundColor(DesignSystem.Colors.textSecondary)
+                    .font(Typography.callout)
+                    .foregroundColor(Colors.textSecondary)
                 
                 Spacer()
             }
         }
-        .padding(.horizontal, DesignSystem.Spacing.xs)
+        .padding(.horizontal, Spacing.xs)
     }
     
     // MARK: - Timeframe Selector
     private var timeframeSelector: some View {
         ScrollView(.horizontal, showsIndicators: false) {
-            HStack(spacing: DesignSystem.Spacing.sm) {
+            HStack(spacing: Spacing.sm) {
                 ForEach(TimeFrame.allCases, id: \.self) { timeframe in
                     Button(action: {
-                        withAnimation(DesignSystem.Animation.smooth) {
+                        withAnimation(Animation.smooth) {
                             selectedTimeframe = timeframe
                         }
                     }) {
                         Text(timeframe.rawValue)
-                            .font(DesignSystem.Typography.callout)
-                            .foregroundColor(selectedTimeframe == timeframe ? .white : DesignSystem.Colors.primary)
-                            .padding(.horizontal, DesignSystem.Spacing.md)
-                            .padding(.vertical, DesignSystem.Spacing.sm)
+                            .font(Typography.callout)
+                            .foregroundColor(selectedTimeframe == timeframe ? .white : Colors.primary)
+                            .padding(.horizontal, Spacing.md)
+                            .padding(.vertical, Spacing.sm)
                             .background(
                                 selectedTimeframe == timeframe ?
-                                AnyShapeStyle(DesignSystem.Colors.primaryGradient) :
-                                AnyShapeStyle(DesignSystem.Colors.primary.opacity(0.1))
+                                AnyShapeStyle(Colors.primaryGradient) :
+                                AnyShapeStyle(Colors.primary.opacity(0.1))
                             )
-                            .cornerRadius(DesignSystem.Radius.md)
+                            .cornerRadius(Radius.md)
                     }
                 }
             }
-            .padding(.horizontal, DesignSystem.Spacing.md)
+            .padding(.horizontal, Spacing.md)
         }
     }
     
     // MARK: - Podium Section (Top 3)
     private var podiumSection: some View {
-        VStack(spacing: DesignSystem.Spacing.lg) {
+        VStack(spacing: Spacing.lg) {
             Text("Top 3 Chill-Champions")
-                .font(DesignSystem.Typography.title2)
-                .foregroundColor(DesignSystem.Colors.textPrimary)
+                .font(Typography.title2)
+                .foregroundColor(Colors.textPrimary)
             
-            HStack(alignment: .bottom, spacing: DesignSystem.Spacing.sm) {
+            HStack(alignment: .bottom, spacing: Spacing.sm) {
                 // 2nd Place - Links
                 if topFriends.indices.contains(1) {
                     PodiumPosition(
                         friend: topFriends[1],
                         position: 2,
                         height: 100,
-                        color: DesignSystem.Colors.separator,
+                        color: Colors.separator,
                         showAnimation: $showPodium
                     )
                 } else {
@@ -119,7 +119,7 @@ struct LeaderboardView: View {
                         friend: topFriends[0],
                         position: 1,
                         height: 130,
-                        color: DesignSystem.Colors.warning,
+                        color: Colors.warning,
                         showAnimation: $showPodium
                     )
                 } else {
@@ -132,7 +132,7 @@ struct LeaderboardView: View {
                         friend: topFriends[2],
                         position: 3,
                         height: 80,
-                        color: DesignSystem.Colors.secondary,
+                        color: Colors.secondary,
                         showAnimation: $showPodium
                     )
                 } else {
@@ -140,28 +140,28 @@ struct LeaderboardView: View {
                 }
             }
             .opacity(showPodium ? 1.0 : 0.0)
-            .animation(DesignSystem.Animation.smooth.delay(0.3), value: showPodium)
+            .animation(Animation.smooth.delay(0.3), value: showPodium)
         }
-        .padding(DesignSystem.Spacing.cardPadding)
+        .padding(Spacing.cardPadding)
         .cardStyle()
     }
     
     // MARK: - Leaderboard List
     private var leaderboardList: some View {
-        VStack(spacing: DesignSystem.Spacing.md) {
+        VStack(spacing: Spacing.md) {
             HStack {
                 Text("Komplette Rangliste")
-                    .font(DesignSystem.Typography.title2)
-                    .foregroundColor(DesignSystem.Colors.textPrimary)
+                    .font(Typography.title2)
+                    .foregroundColor(Colors.textPrimary)
                 
                 Spacer()
                 
                 Text("\(appData.friendsRanking.count) Freunde")
-                    .font(DesignSystem.Typography.footnote)
-                    .foregroundColor(DesignSystem.Colors.textSecondary)
+                    .font(Typography.footnote)
+                    .foregroundColor(Colors.textSecondary)
             }
             
-            LazyVStack(spacing: DesignSystem.Spacing.sm) {
+            LazyVStack(spacing: Spacing.sm) {
                 ForEach(Array(appData.friendsRanking.enumerated()), id: \.element.id) { index, friend in
                     LeaderboardRow(
                         friend: friend,
@@ -170,63 +170,63 @@ struct LeaderboardView: View {
                     )
                     .opacity(showList ? 1.0 : 0.0)
                     .animation(
-                        DesignSystem.Animation.smooth.delay(Double(index) * 0.1),
+                        Animation.smooth.delay(Double(index) * 0.1),
                         value: showList
                     )
                 }
             }
         }
-        .padding(DesignSystem.Spacing.cardPadding)
+        .padding(Spacing.cardPadding)
         .cardStyle()
     }
     
     // MARK: - Personal Stats
     private var personalStats: some View {
-        VStack(spacing: DesignSystem.Spacing.md) {
+        VStack(spacing: Spacing.md) {
             HStack {
                 Text("Deine Position")
-                    .font(DesignSystem.Typography.title2)
-                    .foregroundColor(DesignSystem.Colors.textPrimary)
+                    .font(Typography.title2)
+                    .foregroundColor(Colors.textPrimary)
                 
                 Spacer()
             }
             
-            HStack(spacing: DesignSystem.Spacing.md) {
-                VStack(spacing: DesignSystem.Spacing.sm) {
+            HStack(spacing: Spacing.md) {
+                VStack(spacing: Spacing.sm) {
                     Text("Rang")
-                        .font(DesignSystem.Typography.caption)
-                        .foregroundColor(DesignSystem.Colors.textSecondary)
+                        .font(Typography.caption)
+                        .foregroundColor(Colors.textSecondary)
                     
                     Text("#\(userRank)")
-                        .font(DesignSystem.Typography.statNumber)
-                        .foregroundColor(DesignSystem.Colors.primary)
+                        .font(Typography.statNumber)
+                        .foregroundColor(Colors.primary)
                 }
                 .frame(maxWidth: .infinity)
-                .padding(.vertical, DesignSystem.Spacing.lg)
+                .padding(.vertical, Spacing.lg)
                 .cardStyle()
                 
-                VStack(spacing: DesignSystem.Spacing.sm) {
+                VStack(spacing: Spacing.sm) {
                     Text("Deine Punkte")
-                        .font(DesignSystem.Typography.caption)
-                        .foregroundColor(DesignSystem.Colors.textSecondary)
+                        .font(Typography.caption)
+                        .foregroundColor(Colors.textSecondary)
                     
                     Text("\(appData.totalPoints)")
-                        .font(DesignSystem.Typography.statNumber)
-                        .foregroundColor(DesignSystem.Colors.secondary)
+                        .font(Typography.statNumber)
+                        .foregroundColor(Colors.secondary)
                 }
                 .frame(maxWidth: .infinity)
-                .padding(.vertical, DesignSystem.Spacing.lg)
+                .padding(.vertical, Spacing.lg)
                 .cardStyle()
             }
             
             // Motivationstext basierend auf Rang
             Text(motivationalText)
-                .font(DesignSystem.Typography.callout)
-                .foregroundColor(DesignSystem.Colors.textSecondary)
+                .font(Typography.callout)
+                .foregroundColor(Colors.textSecondary)
                 .multilineTextAlignment(.center)
-                .padding(.horizontal, DesignSystem.Spacing.md)
+                .padding(.horizontal, Spacing.md)
         }
-        .padding(DesignSystem.Spacing.cardPadding)
+        .padding(Spacing.cardPadding)
         .cardStyle()
     }
     
@@ -311,7 +311,7 @@ struct PodiumPosition: View {
     @State private var bounce = false
     
     var body: some View {
-        VStack(spacing: DesignSystem.Spacing.sm) {
+        VStack(spacing: Spacing.sm) {
             // Trophäe/Medal
             ZStack {
                 Circle()
@@ -330,19 +330,19 @@ struct PodiumPosition: View {
             
             // Name
             Text(friend.name.components(separatedBy: " ").first ?? friend.name)
-                .font(DesignSystem.Typography.callout)
-                .foregroundColor(DesignSystem.Colors.textPrimary)
+                .font(Typography.callout)
+                .foregroundColor(Colors.textPrimary)
                 .lineLimit(1)
             
             // Stats
             VStack(spacing: 2) {
                 Text("\(friend.totalChillMinutes)")
-                    .font(DesignSystem.Typography.bodyBold)
+                    .font(Typography.bodyBold)
                     .foregroundColor(color)
                 
                 Text("Minuten")
-                    .font(DesignSystem.Typography.caption2)
-                    .foregroundColor(DesignSystem.Colors.textSecondary)
+                    .font(Typography.caption2)
+                    .foregroundColor(Colors.textSecondary)
             }
             
             // Podium
@@ -353,10 +353,10 @@ struct PodiumPosition: View {
                     endPoint: .bottom
                 ))
                 .frame(width: 70, height: height)
-                .customCornerRadius(DesignSystem.Radius.sm, corners: [.topLeft, .topRight])
+                .customCornerRadius(Radius.sm, corners: [.topLeft, .topRight])
                 .overlay(
                     Text("\(position)")
-                        .font(DesignSystem.Typography.title1)
+                        .font(Typography.title1)
                         .foregroundColor(.white)
                         .fontWeight(.black)
                 )
@@ -384,39 +384,39 @@ struct EmptyPodiumPosition: View {
     let height: CGFloat
     
     var body: some View {
-        VStack(spacing: DesignSystem.Spacing.sm) {
+        VStack(spacing: Spacing.sm) {
             ZStack {
                 Circle()
-                    .fill(DesignSystem.Colors.separator.opacity(0.3))
+                    .fill(Colors.separator.opacity(0.3))
                     .frame(width: 50, height: 50)
                 
                 Image(systemName: "questionmark")
                     .font(.title2)
-                    .foregroundColor(DesignSystem.Colors.textTertiary)
+                    .foregroundColor(Colors.textTertiary)
             }
             
             Text("?")
-                .font(DesignSystem.Typography.callout)
-                .foregroundColor(DesignSystem.Colors.textTertiary)
+                .font(Typography.callout)
+                .foregroundColor(Colors.textTertiary)
             
             VStack(spacing: 2) {
                 Text("--")
-                    .font(DesignSystem.Typography.bodyBold)
-                    .foregroundColor(DesignSystem.Colors.textTertiary)
+                    .font(Typography.bodyBold)
+                    .foregroundColor(Colors.textTertiary)
                 
                 Text("Minuten")
-                    .font(DesignSystem.Typography.caption2)
-                    .foregroundColor(DesignSystem.Colors.textTertiary)
+                    .font(Typography.caption2)
+                    .foregroundColor(Colors.textTertiary)
             }
             
             Rectangle()
-                .fill(DesignSystem.Colors.separator.opacity(0.3))
+                .fill(Colors.separator.opacity(0.3))
                 .frame(width: 70, height: height)
-                .customCornerRadius(DesignSystem.Radius.sm, corners: [.topLeft, .topRight])
+                .customCornerRadius(Radius.sm, corners: [.topLeft, .topRight])
                 .overlay(
                     Text("\(position)")
-                        .font(DesignSystem.Typography.title1)
-                        .foregroundColor(DesignSystem.Colors.textTertiary)
+                        .font(Typography.title1)
+                        .foregroundColor(Colors.textTertiary)
                         .fontWeight(.black)
                 )
         }
@@ -430,21 +430,21 @@ struct LeaderboardRow: View {
     let isCurrentUser: Bool
     
     var body: some View {
-        HStack(spacing: DesignSystem.Spacing.md) {
+        HStack(spacing: Spacing.md) {
             // Position
             Text("#\(position)")
-                .font(DesignSystem.Typography.bodyBold)
+                .font(Typography.bodyBold)
                 .foregroundColor(positionColor)
                 .frame(width: 30, alignment: .leading)
             
             // Avatar
             ZStack {
                 Circle()
-                    .fill(DesignSystem.Colors.primaryGradient)
+                    .fill(Colors.primaryGradient)
                     .frame(width: 40, height: 40)
                 
                 Text(friend.initials)
-                    .font(DesignSystem.Typography.callout)
+                    .font(Typography.callout)
                     .foregroundColor(.white)
                     .fontWeight(.semibold)
             }
@@ -452,12 +452,12 @@ struct LeaderboardRow: View {
             // Name und Stats
             VStack(alignment: .leading, spacing: 2) {
                 Text(friend.name)
-                    .font(DesignSystem.Typography.bodyBold)
-                    .foregroundColor(DesignSystem.Colors.textPrimary)
+                    .font(Typography.bodyBold)
+                    .foregroundColor(Colors.textPrimary)
                 
                 Text("Level \(friend.bondLevel) • \(friend.bondTitle)")
-                    .font(DesignSystem.Typography.caption)
-                    .foregroundColor(DesignSystem.Colors.textSecondary)
+                    .font(Typography.caption)
+                    .foregroundColor(Colors.textSecondary)
             }
             
             Spacer()
@@ -465,30 +465,30 @@ struct LeaderboardRow: View {
             // Chill-Minuten
             VStack(alignment: .trailing, spacing: 2) {
                 Text("\(friend.totalChillMinutes)")
-                    .font(DesignSystem.Typography.headline)
-                    .foregroundColor(DesignSystem.Colors.primary)
+                    .font(Typography.headline)
+                    .foregroundColor(Colors.primary)
                 
                 Text("Minuten")
-                    .font(DesignSystem.Typography.caption2)
-                    .foregroundColor(DesignSystem.Colors.textSecondary)
+                    .font(Typography.caption2)
+                    .foregroundColor(Colors.textSecondary)
             }
         }
-        .padding(DesignSystem.Spacing.md)
+        .padding(Spacing.md)
         .background(
             isCurrentUser ? 
-            DesignSystem.Colors.primary.opacity(0.1) : 
-            DesignSystem.Colors.cardBackground
+            Colors.primary.opacity(0.1) : 
+            Colors.cardBackground
         )
-        .cornerRadius(DesignSystem.Radius.md)
+        .cornerRadius(Radius.md)
         .softShadow()
     }
     
     private var positionColor: Color {
         switch position {
-        case 1: return DesignSystem.Colors.warning
-        case 2: return DesignSystem.Colors.separator
-        case 3: return DesignSystem.Colors.secondary
-        default: return DesignSystem.Colors.textSecondary
+        case 1: return Colors.warning
+        case 2: return Colors.separator
+        case 3: return Colors.secondary
+        default: return Colors.textSecondary
         }
     }
 }

@@ -62,12 +62,12 @@ struct WelcomeView: View {
                 // Informationstext
                 VStack(spacing: 16) {
                     Text(welcomeMessage)
-                        .font(DesignSystem.Typography.body)
-                        .foregroundColor(DesignSystem.Colors.textSecondary)
+                        .font(Typography.body)
+                        .foregroundColor(Colors.textSecondary)
                         .multilineTextAlignment(.center)
-                        .padding(.horizontal, DesignSystem.Spacing.lg)
+                        .padding(.horizontal, Spacing.lg)
                         .opacity(showAnimation ? 1.0 : 0.0)
-                        .animation(DesignSystem.Animation.smooth.delay(1.5), value: showAnimation)
+                        .animation(AnimationConfig.smooth.delay(1.5), value: showAnimation)
                     
                     // Features-Vorschau
                     HStack(spacing: 30) {
