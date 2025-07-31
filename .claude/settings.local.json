@@ -10,7 +10,10 @@
       "Bash(find:*)",
       "Bash(ls:*)",
       "Bash(swiftc:*)",
-      "Bash(git add:*)"
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git push:*)",
+      "Bash(git checkout:*)"
     ],
     "deny": []
   }

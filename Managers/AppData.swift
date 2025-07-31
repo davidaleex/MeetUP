@@ -2,6 +2,11 @@ import SwiftUI
 import Foundation
 
 class AppData: ObservableObject {
+    // MARK: - Demo Mode Configuration
+    /// DEMO MODE: Bei jedem App-Start alle Daten zurücksetzen
+    /// Setzen Sie auf false wenn Sie persistente Daten möchten
+    private let isDemoMode: Bool = true
+    
     // MARK: - Persistente Speicherung mit @AppStorage
     @AppStorage("totalPoints") var totalPoints: Int = 0
     @AppStorage("pointsSoundEnabled") var pointsSoundEnabled: Bool = true
@@ -22,6 +27,11 @@ class AppData: ObservableObject {
         let calendar = Calendar.current
         let startOfWeek = calendar.dateInterval(of: .weekOfYear, for: Date())?.start ?? Date()
         weeklyStats = WeeklyStats(weekStart: startOfWeek)
+        
+        // DEMO MODE: Reset alle Daten bei jedem App-Start (nur wenn aktiviert)
+        if isDemoMode {
+            resetAllDataForDemo()
+        }
         
         loadData()
         setupDummyData()
@@ -339,5 +349,59 @@ class AppData: ObservableObject {
         userProfile.totalPoints = totalPoints
         userProfile.totalChillMinutes = totalChillMinutes
         userProfile.totalSessions = totalSessions
+    }
+    
+    // MARK: - Demo Reset Funktionen
+    /// Setzt alle App-Daten für Demo-Zwecke zurück
+    private func resetAllDataForDemo() {
+        print("🔄 DEMO MODE: Resetting all app data for fresh start")
+        
+        // Alle UserDefaults/AppStorage zurücksetzen
+        clearAllUserDefaults()
+        
+        // @AppStorage Werte direkt zurücksetzen
+        totalPoints = 0
+        pointsSoundEnabled = true
+        privateChillMode = false
+        totalChillMinutes = 0
+        totalSessions = 0
+        
+        // Published Properties zurücksetzen
+        selectedFriends = []
+        isChilling = false
+        currentSession = nil
+        friends = []
+        challenges = []
+        userProfile = UserProfile()
+        
+        // Weekly Stats neu initialisieren
+        let calendar = Calendar.current
+        let startOfWeek = calendar.dateInterval(of: .weekOfYear, for: Date())?.start ?? Date()
+        weeklyStats = WeeklyStats(weekStart: startOfWeek)
+    }
+    
+    /// Löscht alle UserDefaults für einen kompletten Reset
+    private func clearAllUserDefaults() {
+        let keys = [
+            "friends",
+            "challenges", 
+            "weeklyStats",
+            "userProfile",
+            "totalPoints",
+            "pointsSoundEnabled",
+            "privateChillMode",
+            "totalChillMinutes",
+            "totalSessions",
+            "userFirstName",
+            "userLastName",
+            "hasCompletedOnboarding"
+        ]
+        
+        for key in keys {
+            UserDefaults.standard.removeObject(forKey: key)
+        }
+        
+        UserDefaults.standard.synchronize()
+        print("✅ All UserDefaults cleared for demo mode")
     }
 }

@@ -30,6 +30,26 @@ struct Challenge: Identifiable, Codable {
     var isCompleted: Bool {
         return currentProgress >= targetValue
     }
+    
+    /// Konvertiert den color String zu SwiftUI Color
+    var colorValue: Color {
+        switch color.lowercased() {
+        case "purple":
+            return Colors.primary
+        case "orange":
+            return Colors.secondary
+        case "green":
+            return Colors.success
+        case "blue":
+            return Colors.info
+        case "red":
+            return Colors.error
+        case "yellow":
+            return Colors.warning
+        default:
+            return Colors.primary
+        }
+    }
 }
 
 enum ChallengeType: String, Codable, CaseIterable {

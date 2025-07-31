@@ -13,9 +13,9 @@ struct ContentView: View {
     
     enum TabSelection: String, CaseIterable {
         case home = "Home"
-        case chill = "Chill"
         case friends = "Freunde"
-        case leaderboard = "Ranking"
+        case ranking = "Ranking"
+        case stats = "Stats"
         case profile = "Profil"
     }
     
@@ -31,16 +31,6 @@ struct ContentView: View {
                 }
                 .tag(TabSelection.home)
             
-            // Chill Tab
-            ChillView()
-                .tabItem {
-                    Image(systemName: selectedTab == .chill ? "timer.circle.fill" : "timer.circle")
-                        .font(.system(size: Spacing.tabIconSize))
-                    Text("Chill")
-                        .font(Typography.caption)
-                }
-                .tag(TabSelection.chill)
-            
             // Friends Tab
             FriendsView()
                 .tabItem {
@@ -51,15 +41,25 @@ struct ContentView: View {
                 }
                 .tag(TabSelection.friends)
             
-            // Leaderboard Tab - Neue integrierte LeaderboardView
-            LeaderboardView()
+            // Ranking Tab
+            RankingView()
                 .tabItem {
-                    Image(systemName: selectedTab == .leaderboard ? "trophy.fill" : "trophy")
+                    Image(systemName: selectedTab == .ranking ? "trophy.fill" : "trophy")
                         .font(.system(size: Spacing.tabIconSize))
                     Text("Ranking")
                         .font(Typography.caption)
                 }
-                .tag(TabSelection.leaderboard)
+                .tag(TabSelection.ranking)
+            
+            // Stats Tab - Detaillierte Statistiken
+            StatsTabView()
+                .tabItem {
+                    Image(systemName: selectedTab == .stats ? "chart.bar.fill" : "chart.bar")
+                        .font(.system(size: Spacing.tabIconSize))
+                    Text("Stats")
+                        .font(Typography.caption)
+                }
+                .tag(TabSelection.stats)
             
             // Profile Tab - Erweiterte Ansicht mit Mehr-Funktionen
             ModernProfileView()
@@ -305,7 +305,157 @@ struct QuickActionCard: View {
     }
 }
 
-#Preview {
-    ContentView()
-        .environmentObject(AppData())
+// MARK: - Stats Tab View
+struct StatsTabView: View {
+    @EnvironmentObject var appData: AppData
+    
+    var body: some View {
+        NavigationStack {
+            ScrollView(.vertical, showsIndicators: false) {
+                VStack(spacing: Spacing.sectionSpacing) {
+                    // Übersicht Stats
+                    VStack(alignment: .leading, spacing: Spacing.lg) {
+                        Text("Übersicht")
+                            .font(Typography.title2)
+                            .foregroundColor(Colors.textPrimary)
+                        
+                        LazyVGrid(columns: [
+                            GridItem(.flexible()),
+                            GridItem(.flexible())
+                        ], spacing: Spacing.md) {
+                            StatCardView(
+                                title: "Gesamt Punkte",
+                                value: "\(appData.totalPoints)",
+                                icon: "flame.fill",
+                                color: Colors.secondary
+                            )
+                            
+                            StatCardView(
+                                title: "Level",
+                                value: "\(appData.userProfile.level)",
+                                icon: "star.fill",
+                                color: Colors.warning
+                            )
+                            
+                            StatCardView(
+                                title: "Sessions",
+                                value: "\(appData.totalSessions)",
+                                icon: "play.circle.fill",
+                                color: Colors.primary
+                            )
+                            
+                            StatCardView(
+                                title: "Chill Zeit",
+                                value: "\(appData.totalChillMinutes)m",
+                                icon: "timer.circle.fill",
+                                color: Colors.info
+                            )
+                        }
+                    }
+                    .padding(Spacing.cardPadding)
+                    .cardStyle()
+                    
+                    // Diese Woche
+                    VStack(alignment: .leading, spacing: Spacing.lg) {
+                        Text("Diese Woche")
+                            .font(Typography.title2)
+                            .foregroundColor(Colors.textPrimary)
+                        
+                        VStack(spacing: Spacing.md) {
+                            StatRowView(
+                                title: "Punkte gesammelt",
+                                value: "\(appData.weeklyStats.pointsEarned)",
+                                icon: "plus.circle.fill",
+                                color: Colors.success
+                            )
+                            
+                            StatRowView(
+                                title: "Sessions gestartet",
+                                value: "\(appData.weeklyStats.sessionsCount)",
+                                icon: "play.fill",
+                                color: Colors.primary
+                            )
+                            
+                            StatRowView(
+                                title: "Aktive Freunde",
+                                value: "\(appData.weeklyStats.uniqueFriendsCount)",
+                                icon: "person.2.fill",
+                                color: Colors.info
+                            )
+                        }
+                    }
+                    .padding(Spacing.cardPadding)
+                    .cardStyle()
+                    
+                    Spacer(minLength: Spacing.xl)
+                }
+                .padding(.horizontal, Spacing.md)
+            }
+            .navigationTitle("Statistiken")
+            .navigationBarTitleDisplayMode(.large)
+            .background(Colors.background)
+        }
+    }
+}
+
+// MARK: - Stat Card View Component
+struct StatCardView: View {
+    let title: String
+    let value: String
+    let icon: String
+    let color: Color
+    
+    var body: some View {
+        VStack(spacing: Spacing.md) {
+            Image(systemName: icon)
+                .font(.title2)
+                .foregroundColor(color)
+            
+            Text(value)
+                .font(Typography.statNumber)
+                .foregroundColor(Colors.textPrimary)
+            
+            Text(title)
+                .font(Typography.caption)
+                .foregroundColor(Colors.textSecondary)
+                .multilineTextAlignment(.center)
+        }
+        .frame(maxWidth: .infinity)
+        .padding(Spacing.md)
+        .background(Colors.cardBackground)
+        .cornerRadius(Radius.md)
+        .overlay(
+            RoundedRectangle(cornerRadius: Radius.md)
+                .stroke(Colors.separator, lineWidth: 0.5)
+        )
+    }
+}
+
+// MARK: - Stat Row View Component
+struct StatRowView: View {
+    let title: String
+    let value: String
+    let icon: String
+    let color: Color
+    
+    var body: some View {
+        HStack(spacing: Spacing.md) {
+            Image(systemName: icon)
+                .font(.title3)
+                .foregroundColor(color)
+                .frame(width: 24)
+            
+            VStack(alignment: .leading, spacing: 2) {
+                Text(title)
+                    .font(Typography.callout)
+                    .foregroundColor(Colors.textPrimary)
+                
+                Text(value)
+                    .font(Typography.caption)
+                    .foregroundColor(Colors.textSecondary)
+            }
+            
+            Spacer()
+        }
+    }
 }
